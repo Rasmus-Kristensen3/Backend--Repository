@@ -31,12 +31,25 @@ const connection = mysql.createConnection({
     password: process.env.DBPASSWORD,
     database: process.env.DBDATABASE
 });
+
 app.get('/all',(req, res) => {
     connection.query('SELECT name FROM pokemon',(error,results) => {
         res.send(results);
     });
 });
 
+app.get('/attackvalue', (req,res) => {
+    const attack = req.query.attack;
+    connection.query('SELECT name, attack FROM pokemon WHERE attack > ?',
+        [attack], (error, results) => {
+            if (results.length === 0) {
+                res.send('Der er ingen Pokémon med højere attack. Den højeste attack er XXX, og den laveste er XXX')
+            } else {
+                res.send(results);
+            }
+
+        });
+});
 
 
 
