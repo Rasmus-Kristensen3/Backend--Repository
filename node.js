@@ -31,32 +31,11 @@ const connection = mysql.createConnection({
     password: process.env.DBPASSWORD,
     database: process.env.DBDATABASE
 });
-
-// 1) Se en liste over alle Pokémon med deres navne og stats.
-app.get('/allPokemon',(req, res) => {
-    connection.query('SELECT name, speed, special_defence, special_attack, defence, attack FROM pokemon',(error,results) => {
+app.get('/all',(req, res) => {
+    connection.query('SELECT name FROM pokemon',(error,results) => {
         res.send(results);
     });
 });
-
-// 2) Filtrer efter deres attack værdi
-
-
-ejfhjsdfjdfkh
-
-
-
-
-
-app.listen(port, () => {
-    console.log(`Serveren kører på http://localhost:${port}`);
-});
-
-
-
-
-
-
 
 
 
