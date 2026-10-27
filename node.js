@@ -53,7 +53,6 @@ app.get('/attackvalue', (req,res) => {
 });
 
 
-
 // 2. Trainer
 
 app.get('/alltrainers', (req, res) =>{
