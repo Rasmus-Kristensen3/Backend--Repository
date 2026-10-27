@@ -31,9 +31,18 @@ const connection = mysql.createConnection({
     password: process.env.DBPASSWORD,
     database: process.env.DBDATABASE
 });
+app.get('/all',(req, res) => {
+    connection.query('SELECT name FROM pokemon',(error,results) => {
+        res.send(results);
+    });
+});
 
 
 
+
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+});
 
 
 
