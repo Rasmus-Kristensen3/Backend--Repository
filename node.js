@@ -42,12 +42,14 @@ app.get('/all',(req, res) => {
 
 
 // 2. Trainer
+
 app.get('/alltrainers', (req, res) =>{
     connection.query('select trainer_name as name,age, hometown from trainer',
         (error, results) =>{
         res.send(results);
         })})
 
+// test
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
