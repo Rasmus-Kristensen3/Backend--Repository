@@ -104,6 +104,35 @@ res.send(results)
     })})
 
 
+// Oprette en ny trainer.
+app.post("/trainer/new", (req,res) =>{
+    const trainer_name = req.body.trainer_name
+    const hometown = req.body.hometown
+    const age = req.body.age
+
+    connection.query(
+        "INSERT INTO trainer (trainer_name, hometown, age) VALUES (?,?,?)",
+        [trainer_name, hometown, age],
+        (error, results) =>{
+            res.send("New Trainer Created")
+        }
+    )
+})
+
+// Tilføje en Pokémon til en trainer.
+app.post("/trainer/add", (req,res) =>{
+    const trainerId = req.body.trainer_id
+    const pokemonId = req.body.pokedex_number
+
+    connection.query(
+        "INSERT INTO trainer_pokemon (trainer_id, pokedex_number) VALUES (?,?)",
+        [trainerId, pokemonId],
+        (error,results) =>{
+            res.send("Pokemon added to trainer")
+        })
+})
+
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
