@@ -72,6 +72,19 @@ app.get('/primarytype', (req,res) =>{
         });
 });
 
+// pokemon 3 Filtrer søgning efter navn)
+app.get('/pokemonname', (req,res) => {
+    const nameopg3 = req.query.name;
+    connection.query('SELECT * FROM pokemon WHERE name = ?',
+        [nameopg3],
+        (error,results) => {
+        if (results.length === 0) {
+            res.send('Der blev ikke fundet nogen Pokémon med dette navn')
+        } else {
+            res.send(results);
+        }
+        });
+});
 
 
 // 2. Trainer
