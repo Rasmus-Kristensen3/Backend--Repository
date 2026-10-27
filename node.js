@@ -88,14 +88,22 @@ app.get('/pokemonname', (req,res) => {
 
 
 // 2. Trainer
-
+// 1) liste over alle trainers
 app.get('/alltrainers', (req, res) =>{
     connection.query('select trainer_name as name,age, hometown from trainer',
         (error, results) =>{
         res.send(results);
         })})
 
-// test
+// 2) se hvilke pokemon en bestemt trainer ejer
+app.get('/pokemontrainersown', (req,res) =>{
+    const whichTrainerOwnsWhatPokemonParameter = req.query.trainer_name;
+    connection.query('select pokemon.name, trainer_name from pokemon inner join trainer_pokemon on pokemon.pokedex_number = trainer_pokemon.pokedex_number inner join trainer on trainer_pokemon.trainer_id = trainer.trainer_id where trainer_name = ?',
+        [whichTrainerOwnsWhatPokemonParameter], (error, results) =>{
+res.send(results)
+    })})
+
+
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
