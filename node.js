@@ -32,12 +32,13 @@ const connection = mysql.createConnection({
     database: process.env.DBDATABASE
 });
 
-app.get('/all',(req, res) => {
+app.get('/allpokemon',(req, res) => {
     connection.query('SELECT name FROM pokemon',(error,results) => {
         res.send(results);
     });
 });
 
+// pokemon 1)
 app.get('/attackvalue', (req,res) => {
     const attack = req.query.attack;
     connection.query('SELECT name, attack FROM pokemon WHERE attack > ?',
@@ -53,6 +54,15 @@ app.get('/attackvalue', (req,res) => {
 
 
 
+// 2. Trainer
+
+app.get('/alltrainers', (req, res) =>{
+    connection.query('select trainer_name as name,age, hometown from trainer',
+        (error, results) =>{
+        res.send(results);
+        })})
+
+// test
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
