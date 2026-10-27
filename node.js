@@ -7,9 +7,6 @@ PORT=3000
 */
 require("dotenv").config();
 
-console.log(process.env.DBUSER);
-
-
 //npm install express --save
 const express = require("express");
 //npm install mysql2 --save
@@ -32,16 +29,25 @@ const connection = mysql.createConnection({
     database: process.env.DBDATABASE
 });
 
+connection.connect((error) => {
+    if (error) {
+        console.log(error);
+    } else {
+        console.log("Forbundet til databasen!");
+    }
+});
+
+// liste over alle Pokémon med deres navne og stats.
 app.get('/allpokemon',(req, res) => {
     connection.query('SELECT name FROM pokemon',(error,results) => {
         res.send(results);
     });
 });
 
-// pokemon 1)
+// pokemon 1 Filtrer efter deres attack værdi )
 app.get('/attackvalue', (req,res) => {
     const attack = req.query.attack;
-    connection.query('SELECT name, attack FROM pokemon WHERE attack > ?',
+    connection.query('SELECT * FROM pokemon WHERE attack > ?',
         [attack], (error, results) => {
             if (results.length === 0) {
                 res.send('Der er ingen Pokémon med højere attack. Den højeste attack er XXX, og den laveste er XXX')
@@ -51,6 +57,21 @@ app.get('/attackvalue', (req,res) => {
 
         });
 });
+
+// pokemon 2 Filtrer efter deres primary type)
+app.get('/primarytype', (req,res) =>{
+    const type = req.query.type;
+    connection.query('SELECT * FROM pokemon WHERE primary_type = ?',
+        [type],
+        (error,results) => {
+        if (results.length === 0) {
+            res.send('Der blev ikke fundet nogen Pokémon med denne type')
+        } else {
+            res.send(results);
+        }
+        });
+});
+
 
 
 // 2. Trainer
