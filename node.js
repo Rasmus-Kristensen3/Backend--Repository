@@ -137,5 +137,40 @@ app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
 
+// Hvilken Pokémon har den højeste speed?
+app.get("/pokemon/fastest", (req, res)=> {
+    connection.query(
+        `SELECT *
+         FROM pokemon
+         ORDER BY speed DESC LIMIT 1;`,
+        (error, result) => {
+            res.send(result);
+        });
+});
 
-// hvis jeg nu skriver noget sjovt her og pusher til min branch
+app.get('/pokemon/lowest-speed', (req, res) => {
+    connection.query(
+        `SELECT primary_type, AVG(speed) AS avg_speed
+         FROM pokemon
+         GROUP BY primary_type
+         ORDER BY avg_speed ASC;`,
+        (error, results) => {
+            if (error) return res.status(500).send(error.message);
+            res.send(results);
+        }
+    );
+});
+
+app.get('/stats/average-attack-per-attack',(req, res)=>{
+    connection.query(
+        `SELECT primary_type, AVG(attack) AS avg_attack
+         FROM pokemon
+         GROUP BY primary_type
+         ORDER BY avg_attack ASC;`,
+        (error, results) => {
+            if (error) return res.status(500).send(error.message);
+            res.send(results);
+        }
+    );
+
+});
