@@ -139,3 +139,23 @@ app.listen(port, () => {
 
 
 
+// 3. DASHBOARD
+// Hvilke trainers har flest Pokémon?
+
+app.get('/chartfortrainersxpokemons', (req,res) =>{
+    connection.query('SELECT trainer_id,COUNT(*) AS number_of_pokemon FROM trainer_pokemon GROUP BY trainer_id ORDER BY number_of_pokemon DESC',
+        (error, results) =>{
+            res.send(results)
+        }
+    );
+});
+
+// En liste over Pokemons med gennemsnitlige samlede stats, DESC liste.
+
+app.get('/higheststatpokemons', (req, res) =>{
+   connection.query('SELECT name,ROUND((speed + special_defence + special_attack + defence + attack + hp) / 6, 2) AS Average_Stats FROM pokemon ORDER BY Average_Stats DESC LIMIT 20',
+       (error, results) =>{
+           res.send(results)
+       }
+   );
+});
