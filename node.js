@@ -19,6 +19,7 @@ const app = express();
 const port = 3000;
 
 app.use(cors());
+app.use(express.json());
 
 //Host, user, password database
 const connection = mysql.createConnection({
@@ -28,7 +29,6 @@ const connection = mysql.createConnection({
     password: process.env.DBPASSWORD,
     database: process.env.DBDATABASE
 });
-
 connection.connect((error) => {
     if (error) {
         console.log(error);
@@ -39,7 +39,8 @@ connection.connect((error) => {
 
 // liste over alle Pokémon med deres navne og stats.
 app.get('/allpokemon',(req, res) => {
-    connection.query('SELECT name FROM pokemon',(error,results) => {
+    connection.query('SELECT pokedex_number , name FROM pokemon',(error,results) => {
+    connection.query('SELECT * FROM pokemon',(error,results) => {
         res.send(results);
     });
 });
@@ -86,11 +87,11 @@ app.get('/pokemonname', (req,res) => {
         });
 });
 
-
 // 2. Trainer
+
 // 1) liste over alle trainers
 app.get('/alltrainers', (req, res) =>{
-    connection.query('select trainer_name as name,age, hometown from trainer',
+    connection.query('select trainer_id ,trainer_name as name,age, hometown from trainer',
         (error, results) =>{
         res.send(results);
         })})
@@ -128,10 +129,13 @@ app.post("/trainer/add", (req,res) =>{
         "INSERT INTO trainer_pokemon (trainer_id, pokedex_number) VALUES (?,?)",
         [trainerId, pokemonId],
         (error,results) =>{
+            if (error) {
+                console.log(error);
+                return res.status(500).send("Fejl: Pokemon blev ikke tilføjet");
+            }
             res.send("Pokemon added to trainer")
         })
 })
-
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
