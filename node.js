@@ -29,7 +29,6 @@ const connection = mysql.createConnection({
     password: process.env.DBPASSWORD,
     database: process.env.DBDATABASE
 });
-
 connection.connect((error) => {
     if (error) {
         console.log(error);
@@ -40,6 +39,7 @@ connection.connect((error) => {
 
 // liste over alle Pokémon med deres navne og stats.
 app.get('/allpokemon',(req, res) => {
+
     connection.query('SELECT * FROM pokemon',(error,results) => {
         res.send(results);
     });
@@ -87,11 +87,11 @@ app.get('/pokemonname', (req,res) => {
         });
 });
 
-
 // 2. Trainer
+
 // 1) liste over alle trainers
 app.get('/alltrainers', (req, res) =>{
-    connection.query('select trainer_name as name,age, hometown from trainer',
+    connection.query('select trainer_id ,trainer_name as name,age, hometown from trainer',
         (error, results) =>{
         res.send(results);
         })})
@@ -130,14 +130,76 @@ app.post("/trainer/add", (req,res) =>{
         "INSERT INTO trainer_pokemon (trainer_id, pokedex_number) VALUES (?,?)",
         [trainerId, pokemonId],
         (error,results) =>{
+            if (error) {
+                console.log(error);
+                return res.status(500).send("Fejl: Pokemon blev ikke tilføjet");
+            }
             res.send("Pokemon added to trainer")
         })
 })
-
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
 
+// Hvilken Pokémon har den højeste speed?
+app.get("/pokemon/fastest", (req, res)=> {
+    connection.query(
+        `SELECT *
+         FROM pokemon
+         ORDER BY speed DESC LIMIT 1;`,
+        (error, result) => {
+            res.send(result);
+        });
+});
 
-// hvis jeg nu skriver noget sjovt her og pusher til min branch
+app.get('/pokemon/lowest-speed', (req, res) => {
+    connection.query(
+        `SELECT primary_type, AVG(speed) AS avg_speed
+         FROM pokemon
+         GROUP BY primary_type
+         ORDER BY avg_speed ASC;`,
+        (error, results) => {
+            if (error) return res.status(500).send(error.message);
+            res.send(results);
+        }
+    );
+});
+
+app.get('/stats/average-attack-per-attack',(req, res)=>{
+    connection.query(
+        `SELECT primary_type, AVG(attack) AS avg_attack
+         FROM pokemon
+         GROUP BY primary_type
+         ORDER BY avg_attack ASC;`,
+        (error, results) => {
+            if (error) return res.status(500).send(error.message);
+            res.send(results);
+        }
+    );
+});
+
+
+
+
+
+// 3. DASHBOARD
+// Hvilke trainers har flest Pokémon?
+
+app.get('/chartfortrainersxpokemons', (req,res) =>{
+    connection.query('SELECT trainer_id,COUNT(*) AS number_of_pokemon FROM trainer_pokemon GROUP BY trainer_id ORDER BY number_of_pokemon DESC',
+        (error, results) =>{
+            res.send(results)
+        }
+    );
+});
+
+// En liste over Pokemons med gennemsnitlige samlede stats, DESC liste.
+
+app.get('/higheststatpokemons', (req, res) =>{
+   connection.query('SELECT name,ROUND((speed + special_defence + special_attack + defence + attack + hp) / 6, 2) AS Average_Stats FROM pokemon ORDER BY Average_Stats DESC LIMIT 20',
+       (error, results) =>{
+           res.send(results)
+       }
+   );
+});
