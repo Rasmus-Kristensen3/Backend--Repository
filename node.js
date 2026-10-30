@@ -205,26 +205,25 @@ app.get('/higheststatpokemons', (req, res) =>{
 });
 
 
-// Moves api
+app.get('/howmanypokemonmoves', (req, res) => {
+    connection.query(
+        'SELECT COUNT(*) AS Moves FROM move',
+        (error, results) => {
+            if (error) {
+                return res.status(500).send(error.message);
+            }
+            res.json(results);
+        }
+    );
+});
 
-app.get("/howmanypokemonmoves", (req, res)=> {
-    connection.query('select count(move_name) as Moves from move', (error, results) =>{
-        res.send(results)
-        })})
+app.get('/howmanytrainers',(req,res)=> {
+    connection.query('SELECT COUNT(trainer_id) as Trainers from trainer',
+        (error, results) => {
+        res.json(results)});
+});
 
 
-
-
-
-
-
-
-
-
-
-
-
-// hvor mange pokemon i databasen
 app.get("/howmanypokemon", (req, res) =>{
     connection.query('select count(pokedex_number) as TotalPokemon from pokemon', (error, results) =>{
         res.send(results)
