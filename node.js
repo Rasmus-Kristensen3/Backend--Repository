@@ -39,7 +39,8 @@ connection.connect((error) => {
 
 // liste over alle Pokémon med deres navne og stats.
 app.get('/allpokemon',(req, res) => {
-    connection.query('SELECT pokedex_number , name FROM pokemon',(error,results) => {
+
+    connection.query('SELECT * FROM pokemon',(error,results) => {
         res.send(results);
     });
 });
@@ -98,10 +99,11 @@ app.get('/alltrainers', (req, res) =>{
 // 2) se hvilke pokemon en bestemt trainer ejer
 app.get('/pokemontrainersown', (req,res) =>{
     const whichTrainerOwnsWhatPokemonParameter = req.query.trainer_name;
-    connection.query('select pokemon.name, trainer_name from pokemon inner join trainer_pokemon on pokemon.pokedex_number = trainer_pokemon.pokedex_number inner join trainer on trainer_pokemon.trainer_id = trainer.trainer_id where trainer_name = ?',
+    connection.query('select pokemon.name from pokemon inner join trainer_pokemon on pokemon.pokedex_number = trainer_pokemon.pokedex_number inner join trainer on trainer_pokemon.trainer_id = trainer.trainer_id where trainer_name = ?',
         [whichTrainerOwnsWhatPokemonParameter], (error, results) =>{
 res.send(results)
     })})
+
 
 
 // Oprette en ny trainer.
@@ -177,9 +179,9 @@ app.get('/stats/average-attack-per-attack',(req, res)=>{
     );
 });
 
-  
-  
-  
+
+
+
 
 // 3. DASHBOARD
 // Hvilke trainers har flest Pokémon?
@@ -220,3 +222,9 @@ app.get('/howmanytrainers',(req,res)=> {
         (error, results) => {
         res.json(results)});
 });
+
+
+app.get("/howmanypokemon", (req, res) =>{
+    connection.query('select count(pokedex_number) as TotalPokemon from pokemon', (error, results) =>{
+        res.send(results)
+        })})
