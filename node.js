@@ -203,3 +203,29 @@ app.get('/higheststatpokemons', (req, res) =>{
        }
    );
 });
+
+
+// Moves api
+
+app.get("/howmanypokemonmoves", (req, res)=> {
+    connection.query('select count(move_name) as Moves from move', (error, results) =>{
+        res.send(results)
+        })})
+
+
+
+
+
+
+
+
+
+
+
+
+
+// hvor mange pokemon i databasen
+app.get("/howmanypokemon", (req, res) =>{
+    connection.query('select count(pokedex_number) as TotalPokemon from pokemon', (error, results) =>{
+        res.send(results)
+        })})
