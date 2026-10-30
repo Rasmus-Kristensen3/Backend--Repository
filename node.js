@@ -40,7 +40,6 @@ connection.connect((error) => {
 // liste over alle Pokémon med deres navne og stats.
 app.get('/allpokemon',(req, res) => {
     connection.query('SELECT pokedex_number , name FROM pokemon',(error,results) => {
-    connection.query('SELECT * FROM pokemon',(error,results) => {
         res.send(results);
     });
 });
@@ -201,4 +200,23 @@ app.get('/higheststatpokemons', (req, res) =>{
            res.send(results)
        }
    );
+});
+
+
+app.get('/howmanypokemonmoves', (req, res) => {
+    connection.query(
+        'SELECT COUNT(*) AS Moves FROM move',
+        (error, results) => {
+            if (error) {
+                return res.status(500).send(error.message);
+            }
+            res.json(results);
+        }
+    );
+});
+
+app.get('/howmanytrainers',(req,res)=> {
+    connection.query('SELECT COUNT(trainer_id) as Trainers from trainer',
+        (error, results) => {
+        res.json(results)});
 });
